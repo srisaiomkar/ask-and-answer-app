@@ -16,13 +16,29 @@ struct User
     string ToString()
     {
         ostringstream sout;
-        sout << id << "," << name << "," << password << "," << email_id << ",";
+        sout << id << "," << name << "," << password << "," << email_id;
         return sout.str();
     }
 };
 struct Common
 {
-    vector<string> ReadFileLines(const string &path)
+    vector<string> SplitString(string s, string delimeter = ",")
+    {
+        vector<string> strings;
+        int pos = 0;
+        while (true)
+        {
+            pos = (int)s.find(delimeter);
+            if (pos == -1)
+                break;
+            string substring = s.substr(0, pos);
+            strings.push_back(substring);
+            s.erase(0, pos + (int)delimeter.length());
+        }
+        strings.push_back(s);
+        return strings;
+    }
+    vector<string> ReadLinesFromFile(const string &path)
     {
         string line;
         vector<string> lines;
@@ -45,17 +61,37 @@ struct Common
         fin.close();
         return lines;
     }
-    void WriteLinesToFile(string path, vector<string> lines)
+    void WriteLinesToFile(string path, vector<string> lines, bool append = true)
     {
+
+        auto status = ios::in | ios::out | ios ::app;
+        if (!append)
+            auto status = ios::in | ios::out | ios ::app;
+        fstream file_handler(path, status);
+
+        if (file_handler.fail())
+        {
+            cout << "Could not open the file\n";
+            return;
+        }
+        for (string line : lines)
+        {
+            file_handler << line << endl;
+        }
+        file_handler.close();
     }
-
-    // vector<User> LinesToUsers(vector<string> lines){
-
-    // }
+    int ToInt(string s)
+    {
+        istringstream sin(s);
+        int i;
+        sin >> i;
+        return i;
+    }
 };
 
 struct UserManager
 {
+    Common c;
     map<string, User> username_user_map;
 
     void Usermenu()
@@ -63,6 +99,7 @@ struct UserManager
     }
     void Login()
     {
+        LoadDataBase();
         string username, password;
         while (true)
         {
@@ -101,9 +138,34 @@ struct UserManager
             cin >> user.password;
             cout << "Enter your email:\n";
             cin >> user.email_id;
-            username_user_map[user.name] = user;
             UpdateDatabase(user);
             break;
+        }
+    }
+    vector<User> UsersFromStrings(vector<string> lines)
+    {
+        vector<User> users;
+        char ch;
+        for (string line : lines)
+        {
+            vector<string> user_details = c.SplitString(line);
+            User user;
+            user.id = c.ToInt(user_details[0]);
+            user.name = user_details[1];
+            user.password = user_details[2];
+            user.email_id = user_details[3];
+            users.push_back(user);
+        }
+        return users;
+    }
+    void LoadDataBase()
+    {
+        username_user_map.clear();
+        vector<User> users;
+        users = UsersFromStrings(c.ReadLinesFromFile("Users.txt"));
+        for (User user : users)
+        {
+            username_user_map[user.name] = user;
         }
     }
     void UpdateDatabase(User &user)
@@ -111,7 +173,7 @@ struct UserManager
         string line = user.ToString();
         vector<string> lines;
         lines.push_back(line);
-        // c.WriteLinesToFile("Users.txt", lines);
+        c.WriteLinesToFile("Users.txt", lines);
     }
 };
 struct QAndASystem
