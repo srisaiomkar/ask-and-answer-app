@@ -176,7 +176,7 @@ struct UserManager
         c.WriteLinesToFile("Users.txt", lines);
     }
 };
-struct QAndASystem
+struct AskAndAnswerSystem
 {
     int Menu(const vector<string> &menu_items)
     {
@@ -219,7 +219,7 @@ struct QAndASystem
 
 int main()
 {
-    QAndASystem system;
+    AskAndAnswerSystem system;
     system.Start();
     return 0;
 }
