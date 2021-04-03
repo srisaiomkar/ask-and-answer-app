@@ -8,7 +8,7 @@ using namespace std;
 
 struct User
 {
-    int id;
+    int id{};
     string name;
     string password;
     string email_id;
