@@ -6,22 +6,18 @@
 #include <sstream>
 using namespace std;
 
-struct User
+struct Helper
 {
-    int id{};
-    string name;
-    string password;
-    string email_id;
-
-    string ToString()
+    int Menu(const vector<string> &menu_items)
     {
-        ostringstream sout;
-        sout << id << "," << name << "," << password << "," << email_id;
-        return sout.str();
+        int choice;
+        for (int id = 0; id < (int)menu_items.size(); id++)
+        {
+            cout << id + 1 << ". " << menu_items[id] << endl;
+        }
+        cin >> choice;
+        return choice;
     }
-};
-struct Common
-{
     vector<string> SplitString(string s, string delimeter = ",")
     {
         vector<string> strings;
@@ -89,13 +85,97 @@ struct Common
     }
 };
 
+struct User
+{
+    int id{};
+    string name;
+    string password;
+    string email_id;
+
+    string GetString()
+    {
+        ostringstream sout;
+        sout << id << "," << name << "," << password << "," << email_id;
+        return sout.str();
+    }
+};
+
+struct Question
+{
+    int id;
+    string question_from;
+    string question_to;
+    string description;
+    string answer;
+    bool is_anonyonus;
+
+    string GetString()
+    {
+        ostringstream sout;
+        sout << id << "," << (is_anonyonus ? "anonymous" : question_from) << "," << question_to << ","
+             << description << "," << answer;
+        return sout.str();
+    }
+};
+
+struct QuestionManager
+{
+    int previous_question_id = 0;
+    Helper helper;
+    void AskQuestion(string &username)
+    {
+        Question question;
+        cout << "Whom do you want to ask the question?\n";
+        cin >> question.question_to;
+        cout << "Please enter the question:\n";
+        cin >> ws;
+        getline(cin, question.description);
+        cout << "So you want to send the question anonymously?(1 for yes, 0 for no)\n";
+        cin >> question.is_anonyonus;
+        question.question_from = username;
+        question.id = previous_question_id + 1;
+        AddQuestionToDB(question);
+    }
+
+    void AddQuestionToDB(Question &question)
+    {
+        vector<string> questions_s;
+        questions_s.push_back(question.GetString());
+        helper.WriteLinesToFile("QAndA.txt", questions_s);
+    }
+};
 struct UserManager
 {
-    Common c;
+    Helper helper;
+    User current_user;
+    QuestionManager question_manager;
     map<string, User> username_user_map;
 
-    void Usermenu()
+    void UserMenu(string username)
     {
+        int choice;
+        vector<string> menu_items;
+        menu_items.push_back("1. Ask a question");
+        menu_items.push_back("2. Answer a question");
+        menu_items.push_back("3. Delete a question");
+        menu_items.push_back("4. Questions from me");
+        menu_items.push_back("5. Questions to me");
+        menu_items.push_back("6. Questions answered by me");
+        menu_items.push_back("7. Print all the users");
+        menu_items.push_back("8. Logout");
+        while (true)
+        {
+            choice = helper.Menu(menu_items);
+            switch (choice)
+            {
+            case 1:
+                question_manager.AskQuestion(username);
+                break;
+
+            default:
+                break;
+            }
+        }
     }
     void Login()
     {
@@ -118,7 +198,8 @@ struct UserManager
                 cout << "incorrect password. Try again\n";
                 continue;
             }
-            // UserMenu();
+            current_user = username_user_map[username];
+            UserMenu(current_user.name);
         }
     }
 
@@ -148,9 +229,9 @@ struct UserManager
         char ch;
         for (string line : lines)
         {
-            vector<string> user_details = c.SplitString(line);
+            vector<string> user_details = helper.SplitString(line);
             User user;
-            user.id = c.ToInt(user_details[0]);
+            user.id = helper.ToInt(user_details[0]);
             user.name = user_details[1];
             user.password = user_details[2];
             user.email_id = user_details[3];
@@ -162,7 +243,7 @@ struct UserManager
     {
         username_user_map.clear();
         vector<User> users;
-        users = UsersFromStrings(c.ReadLinesFromFile("Users.txt"));
+        users = UsersFromStrings(helper.ReadLinesFromFile("Users.txt"));
         for (User user : users)
         {
             username_user_map[user.name] = user;
@@ -170,25 +251,15 @@ struct UserManager
     }
     void UpdateDatabase(User &user)
     {
-        string line = user.ToString();
+        string line = user.GetString();
         vector<string> lines;
         lines.push_back(line);
-        c.WriteLinesToFile("Users.txt", lines);
+        helper.WriteLinesToFile("Users.txt", lines);
     }
 };
 struct AskAndAnswerSystem
 {
-    int Menu(const vector<string> &menu_items)
-    {
-        int choice;
-        for (int id = 0; id < (int)menu_items.size(); id++)
-        {
-            cout << id + 1 << ". " << menu_items[id] << endl;
-        }
-        cin >> choice;
-        return choice;
-    }
-
+    Helper helper;
     void Start()
     {
         vector<string> menu_items;
@@ -197,7 +268,7 @@ struct AskAndAnswerSystem
         menu_items.push_back("Signup");
         while (true)
         {
-            int choice = Menu(menu_items);
+            int choice = helper.Menu(menu_items);
 
             switch (choice)
             {
