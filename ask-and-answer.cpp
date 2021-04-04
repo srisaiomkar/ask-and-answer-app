@@ -109,12 +109,23 @@ struct Question
     string answer;
     bool is_anonyonus;
 
+    Question()
+    {
+        id = 0;
+    }
     string GetString()
     {
         ostringstream sout;
         sout << id << "," << (is_anonyonus ? "anonymous" : question_from) << "," << question_to << ","
-             << description << "," << answer;
+             << description << "," << (answer.length() ? answer : "No Answer yet");
         return sout.str();
+    }
+
+    void Print()
+    {
+        cout << "Question Id: " << id << "\n\tAsked By: " << question_from
+             << "\n\tAsked To: " << question_to << "\n\tQ: " << description
+             << "\n\tA: " << answer << "\n\n";
     }
 };
 
@@ -122,12 +133,14 @@ struct QuestionManager
 {
     int previous_question_id = 0;
     Helper helper;
+    vector<Question> questions;
     void AskQuestion(string &username)
     {
+        LoadQuestionDB();
         Question question;
         cout << "Whom do you want to ask the question?\n";
         cin >> question.question_to;
-        cout << "Please enter the question:\n";
+        cout << "Please enter the question(no commas please:) )\n";
         cin >> ws;
         getline(cin, question.description);
         cout << "So you want to send the question anonymously?(1 for yes, 0 for no)\n";
@@ -143,6 +156,58 @@ struct QuestionManager
         questions_s.push_back(question.GetString());
         helper.WriteLinesToFile("QAndA.txt", questions_s);
     }
+
+    void LoadQuestionDB()
+    {
+        Question q;
+        questions.clear();
+        vector<string> questions_s = helper.ReadLinesFromFile("QAndA.txt");
+        for (string question_s : questions_s)
+        {
+            vector<string> question_details = helper.SplitString(question_s);
+            q.id = helper.ToInt(question_details[0]);
+            q.question_from = question_details[1];
+            q.question_to = question_details[2];
+            q.description = question_details[3];
+            q.answer = question_details[4];
+            questions.push_back(q);
+        }
+        previous_question_id = q.id;
+    }
+
+    void QuestionsByMe(const string &username)
+    {
+        LoadQuestionDB();
+
+        for (Question question : questions)
+        {
+            if (question.question_from == username)
+            {
+                question.Print();
+            }
+        }
+    }
+
+    void QuestionsToMe(const string &username)
+    {
+        LoadQuestionDB();
+        for (Question question : questions)
+        {
+            if (question.question_to == username)
+            {
+                question.Print();
+            }
+        }
+    }
+
+    void PrintAllQuestions(const string &username)
+    {
+        LoadQuestionDB();
+        for (Question question : questions)
+        {
+            question.Print();
+        }
+    }
 };
 struct UserManager
 {
@@ -155,14 +220,15 @@ struct UserManager
     {
         int choice;
         vector<string> menu_items;
-        menu_items.push_back("1. Ask a question");
-        menu_items.push_back("2. Answer a question");
-        menu_items.push_back("3. Delete a question");
-        menu_items.push_back("4. Questions from me");
-        menu_items.push_back("5. Questions to me");
-        menu_items.push_back("6. Questions answered by me");
-        menu_items.push_back("7. Print all the users");
-        menu_items.push_back("8. Logout");
+        menu_items.push_back("Ask a question");
+        menu_items.push_back("Answer a question");
+        menu_items.push_back("Delete a question");
+        menu_items.push_back("Questions asked by me");
+        menu_items.push_back("Questions asked to me");
+        menu_items.push_back("Questions answered by me");
+        menu_items.push_back("Print all the users");
+        menu_items.push_back("Print all the Q and A");
+        menu_items.push_back("Logout");
         while (true)
         {
             choice = helper.Menu(menu_items);
@@ -170,6 +236,21 @@ struct UserManager
             {
             case 1:
                 question_manager.AskQuestion(username);
+                break;
+            case 2:
+                // question_manager.AnswerQuestion(username);
+                break;
+            case 3:
+                // question_manager.AnswerQuestion(username);
+                break;
+            case 4:
+                question_manager.QuestionsByMe(username);
+                break;
+            case 5:
+                question_manager.QuestionsToMe(username);
+                break;
+            case 8:
+                question_manager.PrintAllQuestions(username);
                 break;
 
             default:
