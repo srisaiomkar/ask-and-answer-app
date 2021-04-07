@@ -1,104 +1,11 @@
 #include <iostream>
-#include <string>
-#include <vector>
 #include <map>
 #include <fstream>
 #include <sstream>
+#include "Helper.h"
+#include "User.h"
+
 using namespace std;
-
-struct Helper
-{
-    int Menu(const vector<string> &menu_items)
-    {
-        int choice;
-        for (int id = 0; id < (int)menu_items.size(); id++)
-        {
-            cout << id + 1 << ". " << menu_items[id] << endl;
-        }
-        cin >> choice;
-        return choice;
-    }
-    vector<string> SplitString(string s, string delimeter = ",")
-    {
-        vector<string> strings;
-        int pos = 0;
-        while (true)
-        {
-            pos = (int)s.find(delimeter);
-            if (pos == -1)
-                break;
-            string substring = s.substr(0, pos);
-            strings.push_back(substring);
-            s.erase(0, pos + (int)delimeter.length());
-        }
-        strings.push_back(s);
-        return strings;
-    }
-    vector<string> ReadLinesFromFile(const string &path)
-    {
-        string line;
-        vector<string> lines;
-        ifstream fin(path);
-        if (fin.fail())
-        {
-            cout << "Could not Open the file";
-            return lines;
-        }
-
-        while (getline(fin, line))
-        {
-            if (line.size() == 0)
-            {
-                continue;
-            }
-            lines.push_back(line);
-        }
-
-        fin.close();
-        return lines;
-    }
-    void WriteLinesToFile(string path, vector<string> lines, bool append = true)
-    {
-
-        auto status = ios::in | ios::out | ios ::app;
-        if (!append)
-            auto status = ios::in | ios::out | ios ::app;
-        fstream file_handler(path, status);
-
-        if (file_handler.fail())
-        {
-            cout << "Could not open the file\n";
-            return;
-        }
-        for (string line : lines)
-        {
-            file_handler << line << endl;
-        }
-        file_handler.close();
-    }
-    int ToInt(string s)
-    {
-        istringstream sin(s);
-        int i;
-        sin >> i;
-        return i;
-    }
-};
-
-struct User
-{
-    int id{};
-    string name;
-    string password;
-    string email_id;
-
-    string GetString()
-    {
-        ostringstream sout;
-        sout << id << "," << name << "," << password << "," << email_id;
-        return sout.str();
-    }
-};
 
 struct Question
 {
@@ -117,15 +24,15 @@ struct Question
     {
         ostringstream sout;
         sout << id << "," << (is_anonyonus ? "anonymous" : question_from) << "," << question_to << ","
-             << description << "," << (answer.length() ? answer : "No Answer yet");
+            << description << "," << (answer.length() ? answer : "No Answer yet");
         return sout.str();
     }
 
     void Print()
     {
         cout << "Question Id: " << id << "\n\tAsked By: " << question_from
-             << "\n\tAsked To: " << question_to << "\n\tQ: " << description
-             << "\n\tA: " << answer << "\n\n";
+            << "\n\tAsked To: " << question_to << "\n\tQ: " << description
+            << "\n\tA: " << answer << "\n\n";
     }
 };
 
@@ -134,7 +41,7 @@ struct QuestionManager
     int previous_question_id = 0;
     Helper helper;
     vector<Question> questions;
-    void AskQuestion(string &username)
+    void AskQuestion(string& username)
     {
         LoadQuestionDB();
         Question question;
@@ -150,7 +57,7 @@ struct QuestionManager
         AddQuestionToDB(question);
     }
 
-    void AddQuestionToDB(Question &question)
+    void AddQuestionToDB(Question& question)
     {
         vector<string> questions_s;
         questions_s.push_back(question.GetString());
@@ -175,7 +82,7 @@ struct QuestionManager
         previous_question_id = q.id;
     }
 
-    void QuestionsByMe(const string &username)
+    void QuestionsByMe(const string& username)
     {
         LoadQuestionDB();
 
@@ -188,7 +95,7 @@ struct QuestionManager
         }
     }
 
-    void QuestionsToMe(const string &username)
+    void QuestionsToMe(const string& username)
     {
         LoadQuestionDB();
         for (Question question : questions)
@@ -200,7 +107,7 @@ struct QuestionManager
         }
     }
 
-    void PrintAllQuestions(const string &username)
+    void PrintAllQuestions(const string& username)
     {
         LoadQuestionDB();
         for (Question question : questions)
@@ -324,13 +231,13 @@ struct UserManager
     {
         username_user_map.clear();
         vector<User> users;
-        users = UsersFromStrings(helper.ReadLinesFromFile("Users.txt"));
+        users = UsersFromStrings(helper.ReadLinesFromFile("D:\\source\\repos\\question-and-answer\\AskAndAnswer\\AskAndAnswer\\Users.txt"));
         for (User user : users)
         {
             username_user_map[user.name] = user;
         }
     }
-    void UpdateDatabase(User &user)
+    void UpdateDatabase(User& user)
     {
         string line = user.GetString();
         vector<string> lines;
@@ -375,3 +282,4 @@ int main()
     system.Start();
     return 0;
 }
+
