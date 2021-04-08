@@ -141,13 +141,20 @@
   <ItemGroup>
     <ClCompile Include="AskAndAnswer.cpp" />
     <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="Question.cpp" />
+    <ClCompile Include="QuestionManager.cpp" />
     <ClCompile Include="User.cpp" />
+    <ClCompile Include="UserManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Question.h" />
+    <ClInclude Include="QuestionManager.h" />
     <ClInclude Include="User.h" />
+    <ClInclude Include="UserManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="QAndA.txt" />
     <Text Include="Users.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
