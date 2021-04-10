@@ -22,7 +22,7 @@ void UserManager::UserMenu(string username)
         switch (choice)
         {
         case 1:
-            question_manager.AskQuestion(username);
+            question_manager.AskQuestion(username,username_user_map);
             break;
         case 2:
             // question_manager.AnswerQuestion(username);

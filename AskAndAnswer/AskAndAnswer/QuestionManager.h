@@ -1,6 +1,9 @@
 #pragma once
+#include<map>
+
 #include "Helper.h"
 #include "Question.h"
+#include "User.h"
 
 
 struct QuestionManager
@@ -10,7 +13,7 @@ struct QuestionManager
     vector<Question> questions;
     QuestionManager();
 
-    void AskQuestion(string& username);
+    void AskQuestion(string& username, map<string, User> &username_user_map);
 
     void AddQuestionToDB(Question& question);
 

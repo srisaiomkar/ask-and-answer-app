@@ -1,19 +1,29 @@
 #include<iostream>
-
+#include<map>
 #include "QuestionManager.h"
 
 QuestionManager::QuestionManager() {
     previous_question_id = 0;
 }
 
-void QuestionManager::AskQuestion(string& username)
+void QuestionManager::AskQuestion(string& username,map<string,User> &username_user_map)
 {
     string description_temp;
+    string question_to_temp;
     bool is_valid_description;
     LoadQuestionDB();
     Question question;
-    cout << "Whom do you want to ask the question?\n";
-    cin >> question.question_to;
+    while (true) {
+        cout << "Whom do you want to ask the question?\n";
+        cin >> question_to_temp;
+        if (username_user_map.count(question_to_temp) > 0) {
+            question.question_to = question_to_temp;
+            break;
+        }
+        else {
+            cout << "User does not exist. Please choose another user\n";
+        }
+    }
     while (true) {
         cout << "Please enter the question (no commas please:) )\n";
         cin >> ws;
