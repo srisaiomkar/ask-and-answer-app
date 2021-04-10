@@ -13,6 +13,7 @@ struct Helper
     vector<string> ReadLinesFromFile(const string& path);
     void WriteLinesToFile(string path, vector<string> lines, bool append = true);
     int ToInt(string s);
+    bool contains_comma(string s);
 };
 
 #endif

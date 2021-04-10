@@ -10,7 +10,6 @@ void QuestionManager::AskQuestion(string& username,map<string,User> &username_us
 {
     string description_temp;
     string question_to_temp;
-    bool is_valid_description;
     LoadQuestionDB();
     Question question;
     while (true) {
@@ -28,15 +27,7 @@ void QuestionManager::AskQuestion(string& username,map<string,User> &username_us
         cout << "Please enter the question (no commas please:) )\n";
         cin >> ws;
         getline(cin, description_temp);
-        is_valid_description = true;
-        for (int i = 0; i < (int)description_temp.size(); i++) {
-            if (description_temp[i] == ',') {
-                cout << "Commas are not allowed. Please ask your question again\n";
-                is_valid_description = false;
-                break;
-            }
-        }
-        if (is_valid_description) {
+        if (!helper.contains_comma(description_temp)) {
             question.description = description_temp;
             break;
         }
@@ -49,12 +40,40 @@ void QuestionManager::AskQuestion(string& username,map<string,User> &username_us
     AddQuestionToDB(question);
 }
 
+void QuestionManager::AnswerQuestion(string& username) {
+    string temp;
+    QuestionsToMe(username);
+    int q_id;
+    while (true) {
+        cout << "Enter the question Id of the question which u want to answer\n";
+        cin >> q_id;
+        for (Question &question : questions) {
+            if (question.question_to == username && question.id == q_id) {
+                while (true) {
+                    cout << "Enter the answer\n";
+                    cin >> ws;
+                    getline(cin, temp);
+                    if (!helper.contains_comma(temp)) {
+                        question.answer = temp;
+                        UpdateQuestionsDB();
+                        return;
+                    }
+                }
+            }
+        }
+        cout << "Question does not exist or you do not have to permission to answer the question\n";
+    }
+    
+
+}
+
 void QuestionManager::AddQuestionToDB(Question& question)
 {
     vector<string> questions_s;
     questions_s.push_back(question.GetString());
     helper.WriteLinesToFile("C:\\Ask And Answer\\QAndA.txt", questions_s);
 }
+
 
 void QuestionManager::LoadQuestionDB()
 {
@@ -73,6 +92,18 @@ void QuestionManager::LoadQuestionDB()
     }
     previous_question_id = q.id;
 }
+
+void QuestionManager::UpdateQuestionsDB()
+{
+    vector<string> lines;
+    for (Question question : questions) {
+        lines.push_back(question.GetString());
+    }
+    helper.WriteLinesToFile("C:\\Ask And Answer\\QAndA.txt", lines,false);
+}
+
+
+
 
 void QuestionManager::QuestionsByMe(const string& username)
 {

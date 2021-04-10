@@ -14,4 +14,5 @@ struct Question
     std::string GetString();
 
     void Print();
+
 };

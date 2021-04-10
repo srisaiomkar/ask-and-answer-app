@@ -25,7 +25,7 @@ void UserManager::UserMenu(string username)
             question_manager.AskQuestion(username,username_user_map);
             break;
         case 2:
-            // question_manager.AnswerQuestion(username);
+             question_manager.AnswerQuestion(username);
             break;
         case 3:
             // question_manager.AnswerQuestion(username);
@@ -94,7 +94,6 @@ void UserManager::SignUp()
 vector<User> UserManager::UsersFromStrings(vector<string> lines)
 {
     vector<User> users;
-    char ch;
     for (string line : lines)
     {
         vector<string> user_details = helper.SplitString(line);

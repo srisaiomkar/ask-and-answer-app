@@ -13,11 +13,14 @@ struct QuestionManager
     vector<Question> questions;
     QuestionManager();
 
-    void AskQuestion(string& username, map<string, User> &username_user_map);
+    void AskQuestion(string& username, map<string, User>& username_user_map);
+
+    void AnswerQuestion(string& username);
 
     void AddQuestionToDB(Question& question);
 
     void LoadQuestionDB();
+    void UpdateQuestionsDB();
 
     void QuestionsByMe(const string& username);
 

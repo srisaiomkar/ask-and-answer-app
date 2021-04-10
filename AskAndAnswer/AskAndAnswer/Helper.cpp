@@ -28,7 +28,7 @@ vector<string> Helper::SplitString(string s, string delimeter)
             break;
         string substring = s.substr(0, pos);
         strings.push_back(substring);
-        s.erase(0, pos + (int)delimeter.length());
+        s.erase(0,pos + (int)delimeter.size());
     }
     strings.push_back(s);
     return strings;
@@ -61,8 +61,8 @@ void Helper::WriteLinesToFile(string path, vector<string> lines, bool append)
 
     auto status = ios::in | ios::out | ios::app;
     if (!append)
-        auto status = ios::in | ios::out | ios::app;
-    fstream file_handler(path, status);
+        status = ios::in | ios::out | ios::trunc;
+    fstream file_handler(path.c_str(), status);
 
     if (file_handler.fail())
     {
@@ -81,4 +81,14 @@ int Helper::ToInt(string s)
     int i;
     sin >> i;
     return i;
+}
+
+bool Helper::contains_comma(string s) {
+    for (int i = 0; i < (int)s.size(); i++) {
+        if (s[i] == ',') {
+            cout << "Commas are not allowed. Please try again\n";
+            return true;
+        }
+    }
+    return false;
 }
