@@ -153,10 +153,6 @@
     <ClInclude Include="User.h" />
     <ClInclude Include="UserManager.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="QAndA.txt" />
-    <Text Include="Users.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

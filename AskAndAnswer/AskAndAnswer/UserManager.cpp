@@ -111,7 +111,7 @@ void UserManager::LoadDataBase()
 {
     username_user_map.clear();
     vector<User> users;
-    users = UsersFromStrings(helper.ReadLinesFromFile("C:\\Users\\srisa\\source\\repos\\srisaiomkar\\ask-and-answer-app\\AskAndAnswer\\AskAndAnswer\\Users.txt"));
+    users = UsersFromStrings(helper.ReadLinesFromFile("C:\\Ask And Answer\\Users.txt"));
     for (User user : users)
     {
         username_user_map[user.name] = user;

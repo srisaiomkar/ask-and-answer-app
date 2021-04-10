@@ -8,13 +8,30 @@ QuestionManager::QuestionManager() {
 
 void QuestionManager::AskQuestion(string& username)
 {
+    string description_temp;
+    bool is_valid_description;
     LoadQuestionDB();
     Question question;
     cout << "Whom do you want to ask the question?\n";
     cin >> question.question_to;
-    cout << "Please enter the question(no commas please:) )\n";
-    cin >> ws;
-    getline(cin, question.description);
+    while (true) {
+        cout << "Please enter the question (no commas please:) )\n";
+        cin >> ws;
+        getline(cin, description_temp);
+        is_valid_description = true;
+        for (int i = 0; i < (int)description_temp.size(); i++) {
+            if (description_temp[i] == ',') {
+                cout << "Commas are not allowed. Please ask your question again\n";
+                is_valid_description = false;
+                break;
+            }
+        }
+        if (is_valid_description) {
+            question.description = description_temp;
+            break;
+        }
+    }
+
     cout << "So you want to send the question anonymously?(1 for yes, 0 for no)\n";
     cin >> question.is_anonyonus;
     question.question_from = username;
@@ -26,14 +43,14 @@ void QuestionManager::AddQuestionToDB(Question& question)
 {
     vector<string> questions_s;
     questions_s.push_back(question.GetString());
-    helper.WriteLinesToFile("QAndA.txt", questions_s);
+    helper.WriteLinesToFile("C:\\Ask And Answer\\QAndA.txt", questions_s);
 }
 
 void QuestionManager::LoadQuestionDB()
 {
     Question q;
     questions.clear();
-    vector<string> questions_s = helper.ReadLinesFromFile("C:\\Users\\srisa\\source\\repos\\srisaiomkar\\ask-and-answer-app\\AskAndAnswer\\AskAndAnswer\\QAndA.txt");
+    vector<string> questions_s = helper.ReadLinesFromFile("C:\\Ask And Answer\\QAndA.txt");
     for (string question_s : questions_s)
     {
         vector<string> question_details = helper.SplitString(question_s);
