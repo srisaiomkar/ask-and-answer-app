@@ -102,7 +102,20 @@ void QuestionManager::UpdateQuestionsDB()
     helper.WriteLinesToFile("C:\\Ask And Answer\\QAndA.txt", lines,false);
 }
 
-
+void QuestionManager::DeleteQuestion(string &username) {
+    int q_id;
+    LoadQuestionDB();
+    QuestionsByMe(username);
+    cout << "Enter the question of the question which you want to delete";
+    cin >> q_id;
+    for (int i = 0; i < (int)questions.size();i++) {
+        if (questions[i].id == q_id && questions[i].question_from == username) {
+            questions.erase(questions.begin() + i);
+            UpdateQuestionsDB();
+            return;
+        }
+    }
+}
 
 
 void QuestionManager::QuestionsByMe(const string& username)

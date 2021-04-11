@@ -28,7 +28,7 @@ void UserManager::UserMenu(string username)
              question_manager.AnswerQuestion(username);
             break;
         case 3:
-            // question_manager.AnswerQuestion(username);
+             question_manager.DeleteQuestion(username);
             break;
         case 4:
             question_manager.QuestionsByMe(username);
