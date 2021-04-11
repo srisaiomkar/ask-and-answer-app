@@ -13,6 +13,7 @@ void UserManager::UserMenu(string username)
     menu_items.push_back("Questions asked by me");
     menu_items.push_back("Questions asked to me");
     menu_items.push_back("Questions answered by me");
+    menu_items.push_back("Questions unanswered by me");
     menu_items.push_back("Print all the users");
     menu_items.push_back("Print all the Q and A");
     menu_items.push_back("Logout");
@@ -36,12 +37,13 @@ void UserManager::UserMenu(string username)
         case 5:
             question_manager.QuestionsToMe(username);
             break;
-        case 8:
+        case 9:
             question_manager.PrintAllQuestions(username);
             break;
-
+        case 10:
+            return;
         default:
-            break;
+            cout << "Please enter a valid option";
         }
     }
 }
@@ -67,8 +69,9 @@ void UserManager::Login()
             continue;
         }
         current_user = username_user_map[username];
-        UserMenu(current_user.name);
+        break;
     }
+    UserMenu(current_user.name);
 }
 
 void UserManager::SignUp()
