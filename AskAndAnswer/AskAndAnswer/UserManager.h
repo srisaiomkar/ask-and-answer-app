@@ -19,4 +19,5 @@ struct UserManager
     vector<User> UsersFromStrings(vector<string> lines);
     void LoadDataBase();
     void UpdateDatabase(User& user);
+    void PrintAllUsers();
 };

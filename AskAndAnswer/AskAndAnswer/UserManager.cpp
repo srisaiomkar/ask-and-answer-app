@@ -37,6 +37,15 @@ void UserManager::UserMenu(string username)
         case 5:
             question_manager.QuestionsToMe(username);
             break;
+        case 6:
+            question_manager.QuestionsAnsweredByMe(username);
+            break;
+        case 7:
+            question_manager.QuestionsUnansweredByMe(username);
+            break;
+        case 8:
+            PrintAllUsers();
+            break;
         case 9:
             question_manager.PrintAllQuestions(username);
             break;
@@ -45,6 +54,11 @@ void UserManager::UserMenu(string username)
         default:
             cout << "Please enter a valid option";
         }
+    }
+}
+void UserManager::PrintAllUsers() {
+    for (const pair<string,User>& user : username_user_map) {
+        user.second.Print();
     }
 }
 void UserManager::Login()

@@ -12,7 +12,7 @@ Question::Question()
     is_anonyonus = 0;
 }
 
-string Question::GetString()
+string Question::GetString()const
 {
     ostringstream sout;
     sout << id << "," << (is_anonyonus ? "anonymous" : question_from) << "," << question_to << ","
@@ -20,7 +20,7 @@ string Question::GetString()
     return sout.str();
 }
 
-void Question::Print()
+void Question::Print()const
 {
     cout << "Question Id: " << id << "\n\tAsked By: " << question_from
         << "\n\tAsked To: " << question_to << "\n\tQ: " << description

@@ -18,12 +18,18 @@ struct QuestionManager
     void AnswerQuestion(string& username);
 
     void DeleteQuestion(string& username);
+
     void AddQuestionToDB(Question& question);
 
     void LoadQuestionDB();
+
     void UpdateQuestionsDB();
 
     void QuestionsByMe(const string& username);
+
+    void QuestionsAnsweredByMe(const string& username);
+
+    void QuestionsUnansweredByMe(const string& username);
 
     void QuestionsToMe(const string& username);
 

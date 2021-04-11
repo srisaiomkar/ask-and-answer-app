@@ -11,8 +11,8 @@ struct Question
 
     Question();
 
-    std::string GetString();
+    std::string GetString()const;
 
-    void Print();
+    void Print()const;
 
 };

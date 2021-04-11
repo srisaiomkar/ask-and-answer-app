@@ -9,7 +9,8 @@ struct User
     string password;
     string email_id;
     User();
-    string GetString();
+    string GetString()const;
+    void Print()const;
 };
 
 #endif

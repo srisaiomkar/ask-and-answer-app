@@ -63,9 +63,8 @@ void QuestionManager::AnswerQuestion(string& username) {
         }
         cout << "Question does not exist or you do not have to permission to answer the question\n";
     }
-    
-
 }
+
 
 void QuestionManager::AddQuestionToDB(Question& question)
 {
@@ -96,7 +95,7 @@ void QuestionManager::LoadQuestionDB()
 void QuestionManager::UpdateQuestionsDB()
 {
     vector<string> lines;
-    for (Question question : questions) {
+    for (const Question& question : questions) {
         lines.push_back(question.GetString());
     }
     helper.WriteLinesToFile("C:\\Ask And Answer\\QAndA.txt", lines,false);
@@ -122,7 +121,7 @@ void QuestionManager::QuestionsByMe(const string& username)
 {
     LoadQuestionDB();
 
-    for (Question question : questions)
+    for (const Question& question : questions)
     {
         if (question.question_from == username)
         {
@@ -131,10 +130,28 @@ void QuestionManager::QuestionsByMe(const string& username)
     }
 }
 
+void QuestionManager::QuestionsAnsweredByMe(const string& username) {
+    LoadQuestionDB();
+    for (const Question &question : questions) {
+        if (question.question_to == username && question.answer != "No Answer yet") {
+            question.Print();
+        }
+    }
+}
+
+void QuestionManager::QuestionsUnansweredByMe(const string& username) {
+    LoadQuestionDB();
+    for (const Question& question : questions) {
+        if (question.question_to == username && question.answer == "No Answer yet") {
+            question.Print();
+        }
+    }
+}
+
 void QuestionManager::QuestionsToMe(const string& username)
 {
     LoadQuestionDB();
-    for (Question question : questions)
+    for (const Question& question : questions)
     {
         if (question.question_to == username)
         {
@@ -146,7 +163,7 @@ void QuestionManager::QuestionsToMe(const string& username)
 void QuestionManager::PrintAllQuestions(const string& username)
 {
     LoadQuestionDB();
-    for (Question question : questions)
+    for (const Question& question : questions)
     {
         question.Print();
     }
